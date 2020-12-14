@@ -18,7 +18,7 @@ package rfpmessagebus
 import (
 	"encoding/json"
 	"fmt"
-	"log"
+	log "github.com/sirupsen/logrus"
 
 	dc "github.com/ODIM-Project/ODIM/lib-messagebus/datacommunicator"
 	"github.com/ODIM-Project/ODIM/lib-utilities/common"
@@ -28,7 +28,7 @@ import (
 // Publish ...
 func Publish(data interface{}) bool {
 	if data == nil {
-		log.Printf("Error: Invalid data on publishing events")
+		log.Error("Nil data passed to event publisher")
 		return false
 	}
 	event := data.(common.Events)
@@ -44,7 +44,7 @@ func Publish(data interface{}) bool {
 	var message common.MessageData
 	err = json.Unmarshal(event.Request, &message)
 	if err != nil {
-		log.Printf("error: Failed to unmarshal the event: %v", err)
+		log.Error("Failed to unmarshal the event: " + err.Error())
 		return false
 	}
 	topic := config.Data.MessageBusConf.EmbQueue[0]
